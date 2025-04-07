@@ -272,6 +272,19 @@ group by c.customer_id, c.name
 order by cantidad_ordenes desc;
 
 /*
+26. Mostrar aquellos empleados que tienen dos ó más personas a su cargo.
+*/
+
+select j.employee_id,
+       j.first_name,
+       j.last_name,
+       count(e.employee_id) AS personas_a_cargo
+from employee j
+join employee e ON e.manager_id = j.employee_id
+group by j.employee_id, j.first_name, j.last_name
+having count(e.employee_id) >= 2;
+
+/*
 28. Mostrar la cantidad de empleados que tiene los departamentos 20 y 30.
 */
 
