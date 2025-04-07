@@ -45,6 +45,7 @@ order by hire_date;
 /*
 6. Mostrar el id y nombre de todos los departamentos de la localidad 122. 
 */
+
 select department_id, name 
 from department d 
 where location_id = 122;
@@ -52,6 +53,7 @@ where location_id = 122;
 /*
 7. Modificar el ejercicio anterior para que la localidad pueda ser ingresada en el momento de efectuar la consulta.
 */
+
 DECLARE
     v_location_id NUMBER;
 BEGIN
@@ -81,6 +83,7 @@ where manager_id is null;
 /*
 10. Mostrar el nombre completo de los empleados, el número de departamento y el nombre del departamento donde trabajan.
 */
+
 select e.first_name,
        e.last_name,
        e.department_id,
@@ -111,6 +114,7 @@ order by e.last_name;
 /*
 12. Para todos los empleados que cobran comisión, mostrar su nombre, el nombre del departamento donde trabajan y el nombre de la región a la que pertenece el departamento.
 */
+
 select e.first_name, 
        d.name, 
        l.regional_group
