@@ -182,5 +182,62 @@ dbms_output.put_line('ocurrió un error inesperado ' || SQLERRM);
 end;
 
 
+/*
+6. Ingresar un número de departamento n y mostrar el nombre del departamento y la cantidad de empleados que trabajan en él.
+Si no tiene empleados sacar un mensaje “Sin empleados”
+Si tiene entre 1 y 10 empleados desplegar “Normal”
+Si tiene más de 10 empleados, desplegar “Muchos”.
+
+DEPARTMENT
+#* department_id
+* name
+ location_id
+
+EMPLOYEE
+#* employee_id
+ last name
+ first name
+ middle_initial
+ job_id
+ manager_id
+ hire_date
+ salary
+ commission
+* department_id
+
+*/
+
+declare 
+
+v_id_departamento department.department_id%type := 10; -- &id_de_departamento;
+v_name_departamento department.name%type;
+v_contador_empleado number;
+
+begin 
+
+-- para sacar el nombre
+select department_id, name
+into v_id_departamento, v_name_departamento
+from department
+where department_id = v_id_departamento;
+
+-- para el contador
+select count(*)
+into v_contador_empleado
+from employee
+where department_id = v_id_departamento;
+
+-- mostrar
+dbms_output.put_line('departamento id: ' || v_id_departamento);
+dbms_output.put_line('nombre: ' || v_name_departamento);
+dbms_output.put_line('cantidad de empleados: ' || v_contador_empleado);
+
+exception
+
+when NO_DATA_FOUND then
+dbms_output.put_line('no se encontró empleado');
+when OTHERS then
+dbms_output.put_line('error inesperado ' || SQLERRM);
+end;
 
 
