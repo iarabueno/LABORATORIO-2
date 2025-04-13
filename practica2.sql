@@ -111,6 +111,76 @@ dbms_output.put_line('ocurrio un error inesperado ' || SQLERRM);
 
 end;
 
+/*
+5. Escribir un bloque para mostrar la cantidad de órdenes que emitió un cliente dado siguiendo las siguientes consignas:
+Ingresar el id del cliente una variable de sustitución
+Si el cliente emitió menos de 3 órdenes desplegar:
+	“El cliente nombre  ES REGULAR”.
+Si emitió entre 4 y 6
+	“El cliente  nombre ES BUENO”.
+Si emitió más:
+	“El cliente nombre ES MUY BUENO”.
+
+    CUSTOMER
+#* customer_id
+ name
+ address
+ city, state,.......
+* salesperson_id
+ credit limit
+
+SALES ORDER
+#* order_id
+ order_date
+* customer_id
+ ship_date
+ total
+
+ 
+*/
+
+declare
+
+v_id_cliente sales_order.customer_id%type := 101; --&id_customer;
+v_nombre_cliente customer.name%type;
+v_cantidad_ordenes number;
+
+
+begin
+
+-- para el nombre de cliente
+select name 
+into v_nombre_cliente 
+from customer 
+where customer_id = v_id_cliente;
+
+-- cantidad de ordenes
+select count(*) 
+into v_cantidad_ordenes
+from sales_order
+where customer_id = v_id_cliente;
+
+-- condicion
+if v_cantidad_ordenes < 3 then
+dbms_output.put_line('el cliente ' || v_nombre_cliente || ' es REGULAR');
+elsif v_cantidad_ordenes between 4 and 6 then 
+dbms_output.put_line('el cliente ' || v_nombre_cliente || 'es BUENO');
+else 
+dbms_output.put_line('el cliente ' || v_nombre_cliente || 'es MUY BUENO');
+
+end if;
+
+
+exception
+
+when NO_DATA_FOUND then 
+dbms_output.put_line('no se encontró el cliente');
+
+when OTHERS then 
+dbms_output.put_line('ocurrió un error inesperado ' || SQLERRM);
+
+end;
+
 
 
 
