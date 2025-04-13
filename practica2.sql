@@ -181,7 +181,6 @@ dbms_output.put_line('ocurrió un error inesperado ' || SQLERRM);
 
 end;
 
-
 /*
 6. Ingresar un número de departamento n y mostrar el nombre del departamento y la cantidad de empleados que trabajan en él.
 Si no tiene empleados sacar un mensaje “Sin empleados”
@@ -239,5 +238,8 @@ dbms_output.put_line('no se encontró empleado');
 when OTHERS then
 dbms_output.put_line('error inesperado ' || SQLERRM);
 end;
+
+
+
 
 
