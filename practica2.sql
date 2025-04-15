@@ -290,6 +290,71 @@ dbms_output.put_line('ocurrio un error inesperado ' || SQLERRM);
 
 end;
 
+/*
+9. Crear un bloque que pida un número de empleado y muestre su apellido y nombre y tantos ‘*’ como resulte de dividir su salario por 100.
+Ej: empleado 7900 gana 950, entonces muestro *********
+*/
+
+declare
+
+v_id_empleado employee.employee_id%type := 7499; --&ingrese_employee_id;
+v_nombre_empleado employee.first_name%type;
+v_apellido_empleado employee.last_name%type;
+v_salary employee.salary%type;
+v_asteriscos varchar(1000) := ' ';
+v_cantidad number;
+
+begin
+
+select first_name,
+       last_name,
+       salary
+into v_nombre_empleado,
+     v_apellido_empleado,
+     v_salary
+from employee 
+where employee_id = v_id_empleado;
+
+v_cantidad := trunc(v_salary / 100);
+
+for i in 1 .. v_cantidad loop
+    v_asteriscos := v_asteriscos || '*';
+end loop;
+
+dbms_output.put_line('empleado: ' || v_nombre_empleado ||' ,apellido: ' || v_apellido_empleado);
+dbms_output.put_line('salario: ' || v_salary);
+dbms_output.put_line('representacion: ' || v_asteriscos);
+
+exception
+
+when no_data_found then
+    dbms_output.put_line('no se encontró el empleado');
+when others then
+    dbms_output.put_line('ocurrio un error inesperado ' || SQLERRM);
+end;
+
+/*
+10 Crear un bloque anónimo para desplegar los primeros n números múltiplos de 3. El valor de n debe ingresarse por pantalla usando una variable de sustitución del SqlDeveloper. Si n >10  desplegar un mensaje de advertencia y terminar el bloque. 
+*/
+
+declare
+    n number := &n; -- variable de sustitución que se pide al usuario
+    contador number := 1;
+    multiplo number := 3;
+begin
+    if n > 10 then
+        dbms_output.put_line('Advertencia: el número ingresado supera el límite permitido.');
+        return;
+    end if;
+
+    dbms_output.put_line('Primeros ' || n || ' múltiplos de 3:');
+    while contador <= n loop
+        dbms_output.put_line(multiplo * contador);
+        contador := contador + 1;
+    end loop;
+end;
+
+
 
 
 
