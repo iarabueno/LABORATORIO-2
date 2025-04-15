@@ -239,6 +239,56 @@ when OTHERS then
 dbms_output.put_line('error inesperado ' || SQLERRM);
 end;
 
+/*
+8.  Definir un registro que contenga los siguientes campos: nro .de empleado, nombre del Empleado, nro de jefe, nombre del jefe. Ingresar un nro.  de empleado, completar los campos del registro y mostrarlos
+*/
+
+-- select employee_id from employee;
+
+declare
+
+v_id_empleado employee.employee_id%type := 7506; --&ingrese_id_empleado;
+
+type empleado_jefe_record_type is record(
+    employee_id employee.employee_id%type,
+    employee_name employee.first_name%type,
+    manager_id employee.manager_id%type,
+    manager_name employee.first_name%type
+);
+
+-- variable tipo registro
+v_empleado_jefe empleado_jefe_record_type;
+
+begin
+
+select e.employee_id,
+       e.first_name,
+       e.manager_id,
+       j.first_name
+       into 
+           v_empleado_jefe.employee_id,
+           v_empleado_jefe.employee_name,
+           v_empleado_jefe.manager_id,
+           v_empleado_jefe.manager_name
+       from employee e
+        left join employee j on 
+        e.manager_id = j.employee_id
+        where e.employee_id = v_id_empleado;
+
+dbms_output.put_line('empleado id: ' || v_empleado_jefe.employee_id);
+dbms_output.put_line('nombre empleado: ' || v_empleado_jefe.employee_name);
+dbms_output.put_line('jefe id: ' || v_empleado_jefe.manager_id);
+dbms_output.put_line('nombre jefe: ' || v_empleado_jefe.manager_name);
+
+exception
+
+when no_data_found then
+dbms_output.put_line('no se encontró el empleado o jefe');
+
+when others then
+dbms_output.put_line('ocurrio un error inesperado ' || SQLERRM);
+
+end;
 
 
 
