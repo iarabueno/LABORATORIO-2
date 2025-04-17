@@ -1,5 +1,5 @@
 /*
-Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
+1. Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
 Si el sueldo es menor a 1300 el incremento es de 10%
 Si el sueldo está entre 1300 y 1500 el incremento es de 15%
 Si el sueldo es mayor a 1500 el incremento es de 20%
@@ -125,6 +125,38 @@ exception
 
 when e_fk then
     raise_application_error(-20001, 'no se puede porque tiene empleados asignados');
+
+/*
+4. Escribir un bloque PL/Sql para insertar un nuevo cargo en la tabla JOB:
+El Job_Id debe generarse sumando 1 al máximo Job_Id existente. Para esto primero encontrar el Max(Job_Id) y guardarlo en una variable.
+El nombre del cargo (Function) debe ser informado desde una variable de sustitución del SqlDeveloper (usar Becario o Estudiante). En la tabla JOB los nombres de función deben estar en mayúsculas.   
+Asentar en la base de datos este insert (Commit).
+Una vez que se ejecutó el bloque Pl/Sql  consultar desde SqlDeveloper todo el contenido de la tabla JOB.
+*/
+
+declare
+v_max_job_id job.job_id%type;
+v_nuevo_job_id job.job_id%type;
+v_function job.function%type := 'holi';--&ingrese_function;
+
+begin
+
+select max(job_id)
+into v_max_job_id
+from job;
+
+v_nuevo_job_id := v_max_job_id + 1;
+
+insert into job(job_id, function)
+values(v_nuevo_job_id, upper(v_function));
+
+dbms_output.put_line('nuevo cargo insertado: ' || v_function);
+
+exception
+when others then
+dbms_output.put_line('error inesperado ' || SQLERRM);
+
+end;
 
 when others then 
     raise_application_error(-20002, 'ocurrio un error inesperado ' || SQLERRM);
