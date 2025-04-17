@@ -162,3 +162,62 @@ when others then
     raise_application_error(-20002, 'ocurrio un error inesperado ' || SQLERRM);
 
  end;
+
+/*
+5. Escribir un bloque PL/SQL que actualice el precio de lista de un producto de acuerdo al número de veces que el producto se vendió:
+Use una variable de sustitución para ingresar el producto.
+Calcule las veces que el producto se vendió (Tabla ITEM). Si el producto se vendió 2 veces o menos decremente su precio en un 10%. Si se vendió más de 2 veces decremente su precio en un 20% y no se vendió nunca en un 50%.
+Tenga en cuenta que el precio de lista vigente de un producto es aquel que tiene la columna END_DATE en null.
+*/
+
+select *
+from product;
+
+
+declare
+
+v_producto_id product.product_id%type := 100860;--&ingrese_product_id;
+v_cantidad_item number := 0;
+v_precio_actual price.list_price%type;
+v_nuevo_precio price.list_price%type;
+
+begin
+
+select count(*)
+into v_cantidad_item
+from item
+where product_id = v_producto_id;
+
+select list_price
+into v_precio_actual
+from price 
+where product_id = v_producto_id and 
+      end_date is null;
+
+if v_cantidad_item = 0 then
+    v_nuevo_precio := v_precio_actual * 0.5;
+
+
+elsif v_cantidad_item <= 2 then
+    v_nuevo_precio := v_precio_actual * 0.9;
+
+else 
+    v_nuevo_precio := v_precio_actual * 0.8;
+end if;
+
+update price 
+set list_price = v_nuevo_precio
+where product_id = v_producto_id and 
+      end_date is null;
+     
+dbms_output.put_line('nuevo cargo insertado: ' || v_producto_id || ' veces vendido: ' || v_cantidad_item);
+dbms_output.put_line('precio: ' || v_precio_actual || ' precio actualizado ' || v_nuevo_precio);
+
+exception
+
+when no_data_found then 
+    dbms_output.put_line('no existe el producto');
+
+when others then
+    dbms_output.put_line('error inesperado ' || SQLERRM);
+end;
