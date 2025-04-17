@@ -1,5 +1,5 @@
 /*
-Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
+1. Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
 Si el sueldo es menor a 1300 el incremento es de 10%
 Si el sueldo está entre 1300 y 1500 el incremento es de 15%
 Si el sueldo es mayor a 1500 el incremento es de 20%
@@ -49,7 +49,6 @@ when others then
     dbms_output.put_line('ocurrió un error inesperado ' || SQLERRM);
 end;
 
-
 /*
 2. Modificar el ejercicio anterior para actualizar la comisión de todos los empleados de acuerdo a su sueldo usando los mismos criterios. Desplegar mensajes indicando cuantos registros fueron actualizados según cada criterio. 
 */
@@ -83,6 +82,50 @@ begin
     dbms_output.put_line('Empleados actualizados con 10% de incremento: ' || v_contador_registro_10);
     dbms_output.put_line('Empleados actualizados con 15% de incremento: ' || v_contador_registro_15);
     dbms_output.put_line('Empleados actualizados con 20% de incremento: ' || v_contador_registro_20);
+
+/*
+3. Crear un bloque Pl/Sql que permita dar de baja cargos que ya no se usan (usar la tabla JOB):
+Eliminar de la tabla JOB aquella fila cuyo Job_Id es ingresado con una variable de sustitución del SqlDeveloper.
+Capturar  e informar mediante excepciones o atributos del cursor , las siguientes eventualidades: no existe el código de cargo ingresado (Sql%Notfound  o Sql%Rowcount) no puede eliminar un cargo que está asignado a empleados (Asociar una excepción con el error correspondiente) .
+*/
+
+/*
+fijarse la cantidad de empleados que tiene
+select job_id,
+       count(*) as cantidad_empleados
+from employee 
+group by job_id 
+having count(*) > 0;
+*/
+
+declare
+
+v_job_id job.job_id%type := 670; --'&ingrese_job_id';
+
+e_fk exception;
+pragma e_fk exception_init(e_fk, -2292);
+
+begin
+
+delete from job 
+where job_id = v_job_id;
+
+if sql%rowcount = 0 then
+    dbms_output.put_line('no existe el cargo: ' || v_job_id);
+else
+    dbms_output.put_line('cargo eliminado correctamente');
+end if;
+
+exception 
+
+when e_fk then
+    raise_application_error(-20001, 'no se puede porque tiene empleados asignados');
+
+when others then 
+    raise_application_error(-20002, 'ocurrio un error inesperado ' || SQLERRM);
+
+ end;
+
 
 exception
     when others then
