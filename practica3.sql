@@ -221,3 +221,96 @@ when no_data_found then
 when others then
     dbms_output.put_line('error inesperado ' || SQLERRM);
 end;
+
+/*
+6. Modificar el ejercicio 5 de la práctica 2 para mostrar un mensaje en caso de no existir la orden.
+*/
+
+declare 
+
+v_id_departamento department.department_id%type := 10; -- &id_de_departamento;
+v_name_departamento department.name%type;
+v_contador_empleado number;
+
+begin 
+
+-- para sacar el nombre
+select department_id, name
+into v_id_departamento, v_name_departamento
+from department
+where department_id = v_id_departamento;
+
+-- para el contador
+select count(*)
+into v_contador_empleado
+from employee
+where department_id = v_id_departamento;
+
+-- mostrar
+dbms_output.put_line('departamento id: ' || v_id_departamento);
+dbms_output.put_line('nombre: ' || v_name_departamento);
+dbms_output.put_line('cantidad de empleados: ' || v_contador_empleado);
+
+exception
+
+when NO_DATA_FOUND then
+dbms_output.put_line('no se encontró empleado');
+when OTHERS then
+dbms_output.put_line('error inesperado ' || SQLERRM);
+end;
+
+/*
+7. Modificar el ejercicio 8 de la práctica 2 para ingresar el apellido del empleado y mostrar su id, nombre, salario y asteriscos de acuerdo al salario.
+Mostrar mensajes si no existe empleado con dicho apellido, o si hay más de un empleado con ese apellido.
+
+ejercicio 5:
+Escribir un bloque para mostrar la cantidad de órdenes que emitió un cliente dado siguiendo las siguientes consignas:
+Ingresar el id del cliente una variable de sustitución
+Si el cliente emitió menos de 3 órdenes desplegar:
+	“El cliente nombre  ES REGULAR”.
+Si emitió entre 4 y 6
+	“El cliente  nombre ES BUENO”.
+Si emitió más:
+	“El cliente nombre ES MUY BUENO”.
+*/
+
+declare
+    v_apellido employee.last_name%type := 'smith'; --&ingrese_apellido;
+    v_id       employee.employee_id%type;
+    v_nombre   employee.first_name%type;
+    v_salario  employee.salary%type;
+    v_cantidad number;
+    v_contador number;
+begin
+    select count(*)
+    into v_cantidad
+    from employee
+    where upper(last_name) = upper(v_apellido);
+
+    if v_cantidad = 0 then
+        dbms_output.put_line('no existe ningún empleado con el apellido: ' || v_apellido);
+    elsif v_cantidad > 1 then
+        dbms_output.put_line('hay más de un empleado con el apellido: ' || v_apellido);
+    else
+        select employee_id, first_name, salary
+        into v_id, v_nombre, v_salario
+        from employee
+        where upper(last_name) = upper(v_apellido);
+
+        dbms_output.put_line('empleado id: ' || v_id);
+        dbms_output.put_line('nombre: ' || v_nombre);
+        dbms_output.put_line('salario: ' || v_salario);
+
+        dbms_output.put_line('asteriscos: ');
+        v_contador := 1;
+        while v_contador <= round(v_salario / 1000) loop
+            dbms_output.put('*');
+            v_contador := v_contador + 1;
+        end loop;
+        dbms_output.new_line;
+    end if;
+
+exception
+    when others then
+        dbms_output.put_line('ocurrió un error inesperado: ' || sqlerrm);
+end;
