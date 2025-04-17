@@ -1,5 +1,5 @@
 /*
-1. Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
+Crear un bloque Pl/Sql que solicite el número de empleado usando una variable de sustitución y dependiendo del monto de su sueldo incrementar su comisión según el siguiente criterio:
 Si el sueldo es menor a 1300 el incremento es de 10%
 Si el sueldo está entre 1300 y 1500 el incremento es de 15%
 Si el sueldo es mayor a 1500 el incremento es de 20%
@@ -83,6 +83,11 @@ begin
     dbms_output.put_line('Empleados actualizados con 15% de incremento: ' || v_contador_registro_15);
     dbms_output.put_line('Empleados actualizados con 20% de incremento: ' || v_contador_registro_20);
 
+exception
+    when others then
+        dbms_output.put_line('Ocurrió un error inesperado: ' || SQLERRM);
+end;
+
 /*
 3. Crear un bloque Pl/Sql que permita dar de baja cargos que ya no se usan (usar la tabla JOB):
 Eliminar de la tabla JOB aquella fila cuyo Job_Id es ingresado con una variable de sustitución del SqlDeveloper.
@@ -125,9 +130,3 @@ when others then
     raise_application_error(-20002, 'ocurrio un error inesperado ' || SQLERRM);
 
  end;
-
-
-exception
-    when others then
-        dbms_output.put_line('Ocurrió un error inesperado: ' || SQLERRM);
-end;
