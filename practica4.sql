@@ -177,8 +177,35 @@ end "PR_CONSULTA_PRECIO";
 /
 
 /*
+5. Escribir una función Q_Credit que recibe el id de un cliente y devuelve el límite de crédito que tiene actualmente (credit_limit). Si el cliente no existe debe devolver nulls. 
+Probar la función desde SqlDeveloper o usando un bloque anónimo.
+*/
 
-Crear una función Valida_Loc que recibe un código de localidad y devuelve TRUE si el código existe en la tabla Location, en caso contrario devuelve FALSE.
+create or replace function "FU_Q_CREDIT" (
+    PI_CUSTOMER_ID in customer.customer_id%type)
+return customer.credit_limit%type
+as
+    v_credit_limit customer.credit_limit%type;
+begin
+    select credit_limit
+    into v_credit_limit
+    from customer
+    where customer_id = PI_CUSTOMER_ID;
+    
+    return v_credit_limit;
+    
+exception
+    when no_data_found then
+      return null;
+     
+    when others then
+        return null;
+        
+end "FU_Q_CREDIT";
+/
+
+/*
+6. Crear una función Valida_Loc que recibe un código de localidad y devuelve TRUE si el código existe en la tabla Location, en caso contrario devuelve FALSE.
 */
 create or replace function "FU_VALIDA_LOC" (
     PI_LOCATION_ID in location.location_id%type)
@@ -234,4 +261,80 @@ when others then
     dbms_output.put_line('ocurrio un error inesperado ' || SQLERRM);
 end "PR_NEW_DEPT";
 /
+
+/*
+8. Crear una función Iva que reciba una valor y devuelva el mismo aplicándole el 21%.
+Usar esta función para desplegar los datos de las órdenes de venta (Sales_order), mostrar todas las columnas más una columna que muestre el total de la orden aplicándole el iva.
+*/
+
+/*
+PROBANDO TODO
+*/
+
+-- 1. Alta de Job
+begin
+  PR_ALTA_JOB('NUEVO_CARGO');
+end;
+/
+
+-- 2. Actualización de Job
+begin
+  PR_UPD_JOB(5, 'CARGO_ACTUALIZADO');
+end;
+/
+
+-- 3. Listar empleados por departamento
+begin
+  PR_LISTA_EMP(10);
+end;
+/
+
+-- 4. Consulta de precio de producto
+declare
+  v_precio_lista price.list_price%type;
+  v_precio_minimo price.min_price%type;
+begin
+  PR_CONSULTA_PRECIO(101, v_precio_lista, v_precio_minimo);
+  dbms_output.put_line('Precio de lista: ' || v_precio_lista);
+  dbms_output.put_line('Precio mínimo: ' || v_precio_minimo);
+end;
+/
+
+-- 5. Consulta de crédito de cliente
+declare
+  v_credito number;
+begin
+  v_credito := FU_Q_CREDIT(100); 
+  if v_credito is null then
+    dbms_output.put_line('Cliente no encontrado o sin límite de crédito');
+  else
+    dbms_output.put_line('Límite de crédito: ' || v_credito);
+  end if;
+end;
+/
+
+-- 6. Validación de localidad
+declare
+  v_valido boolean;
+begin
+  v_valido := FU_VALIDA_LOC(122); 
+  if v_valido then
+    dbms_output.put_line('La localidad es válida');
+  else
+    dbms_output.put_line('Localidad inválida');
+  end if;
+end;
+/
+
+-- 7. Agregar nuevo departamento
+begin
+  PR_NEW_DEPT(60, 'DESARROLLO', 122);
+end;
+/
+
+-- 8. Consulta de órdenes con IVA
+select s.*, FU_IVA(total) as total_con_iva
+from sales_order s;
+
+
 
