@@ -122,34 +122,7 @@ exception
 end "FU_VALIDAR_CLIENTE";
 /
 
-/*
-2) Escribir una función que recibe como parámetro un nombre de una region (regional _group) y retorna su ID (location_id) o cancela con excepciones propias indicando el error en el mensaje del error.
-Contemplar todo error posible
-*/create or replace procedure "PR_ELIMINAR_DEPARTAMENTOS" (
-    p_regional_group      in  location.regional_group%type
-    )
-as
 
-v_validar_location location.location_id%type;
-begin
-
--- validamos cliente
-
-v_validar_location := fu_validar_location(p_regional_group);
-
-delete from department
-where location_id = v_validar_location;
-
-dbms_output.put_line('se han eliminado los departamentos de la localidad '|| p_regional_group);
-
-exception 
-when others then 
-
-dbms_output.put_line('no se pudo eliminar correctamente: || motivo: ' || sqlerrm);
-
-
-end "PR_ELIMINAR_DEPARTAMENTOS";
-/
 /*
  2) Escribir una función que recibe como parámetro un nombre de producto y retorna su ID o cancela con excepciones propias indicando el error en el mensaje del error.
  Contemplar todo error posible.
@@ -351,4 +324,31 @@ exception
 when e_restriccion_integridad then 
 dbms_output.put_line('ocurrio un problema al borrar toods los departamentos ' || sqlerrm);
 end "PR_ELIMINAR_DEPTO";
+/
+/*
+2) eliminar departamentos
+*/create or replace procedure "PR_ELIMINAR_DEPARTAMENTOS" (
+    p_regional_group      in  location.regional_group%type
+    ) return location.location_id%type
+as
+
+v_validar_location location.location_id%type;
+begin
+
+-- validamos cliente
+
+v_validar_location := fu_validar_location(p_regional_group);
+
+delete from department
+where location_id = v_validar_location;
+
+dbms_output.put_line('se han eliminado los departamentos de la localidad '|| p_regional_group);
+
+exception 
+when others then 
+
+dbms_output.put_line('no se pudo eliminar correctamente: || motivo: ' || sqlerrm);
+
+
+end "PR_ELIMINAR_DEPARTAMENTOS";
 /
